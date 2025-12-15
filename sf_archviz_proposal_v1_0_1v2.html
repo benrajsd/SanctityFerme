@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Property Visualization Proposal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .page {
+            background: white;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 60px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            page-break-after: always;
+        }
+        
+        .cover {
+            text-align: center;
+            padding: 100px 60px;
+            background: linear-gradient(135deg, #2c5f2d 0%, #97bc62 100%);
+            color: white;
+        }
+        
+        .cover h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cover .subtitle {
+            font-size: 1.5em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .cover .tagline {
+            font-size: 1.2em;
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        h2 {
+            color: #2c5f2d;
+            border-bottom: 3px solid #97bc62;
+            padding-bottom: 10px;
+            margin: 30px 0 20px 0;
+            font-size: 2em;
+        }
+        
+        h3 {
+            color: #2c5f2d;
+            margin: 25px 0 15px 0;
+            font-size: 1.5em;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, rgba(44,95,45,0.7), rgba(151,188,98,0.7)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%2397bc62" width="1200" height="400"/><path fill="%232c5f2d" opacity="0.3" d="M0,200 Q300,150 600,200 T1200,200 L1200,400 L0,400 Z"/><circle cx="200" cy="100" r="40" fill="%23fff" opacity="0.2"/><circle cx="500" cy="80" r="50" fill="%23fff" opacity="0.2"/><circle cx="900" cy="120" r="45" fill="%23fff" opacity="0.2"/></svg>');
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .diagram {
+            background: #f9f9f9;
+            border: 2px solid #2c5f2d;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .flow-step {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border: 2px solid #97bc62;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: #2c5f2d;
+        }
+        
+        .flow-step:last-child::after {
+            content: '';
+        }
+        
+        .flow-step .step-number {
+            background: #2c5f2d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .flow-step h4 {
+            color: #2c5f2d;
+            margin: 10px 0;
+        }
+        
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .comparison-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+        
+        .comparison-card:hover {
+            border-color: #2c5f2d;
+            box-shadow: 0 5px 15px rgba(44,95,45,0.2);
+        }
+        
+        .comparison-card.recommended {
+            border-color: #2c5f2d;
+            background: linear-gradient(to bottom, #ffffff, #f0f7f0);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #2c5f2d;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .villa-mockup {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 60%, #97bc62 60%, #97bc62 100%);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .villa-structure {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 150px;
+        }
+        
+        .villa-body {
+            width: 200px;
+            height: 100px;
+            background: #d4a574;
+            position: absolute;
+            bottom: 0;
+        }
+        
+        .villa-roof {
+            width: 0;
+            height: 0;
+            border-left: 120px solid transparent;
+            border-right: 120px solid transparent;
+            border-bottom: 60px solid #8b4513;
+            position: absolute;
+            top: -50px;
+            left: -20px;
+        }
+        
+        .villa-window {
+            width: 30px;
+            height: 40px;
+            background: #5fa3d0;
+            position: absolute;
+            bottom: 30px;
+        }
+        
+        .villa-door {
+            width: 40px;
+            height: 60px;
+            background: #654321;
+            position: absolute;
+            bottom: 0;
+            left: 80px;
+        }
+        
+        .tree {
+            position: absolute;
+            bottom: 50px;
+        }
+        
+        .tree-trunk {
+            width: 15px;
+            height: 40px;
+            background: #654321;
+            margin: 0 auto;
+        }
+        
+        .tree-foliage {
+            width: 50px;
+            height: 50px;
+            background: #2d5016;
+            border-radius: 50%;
+            position: relative;
+            top: -30px;
+            left: -17px;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .tech-card {
+            background: linear-gradient(135deg, #2c5f2d, #4a7c59);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .tech-card h4 {
+            color: white;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #97bc62;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 30px 0;
+            padding: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #2c5f2d;
+            border: 4px solid white;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-content {
+            background: white;
+            border: 2px solid #97bc62;
+            border-radius: 8px;
+            padding: 20px;
+            width: 45%;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 55%;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: 55%;
+        }
+        
+        .budget-summary {
+            background: linear-gradient(135deg, #2c5f2d, #97bc62);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .budget-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-top: 10px;
+            padding-top: 20px;
+            border-top: 2px solid white;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-box {
+            background: #f9f9f9;
+            border-left: 4px solid #2c5f2d;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        .feature-box h4 {
+            color: #2c5f2d;
+            margin-bottom: 10px;
+        }
+        
+        .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .architecture-diagram {
+            background: white;
+            border: 2px solid #2c5f2d;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .layer {
+            background: linear-gradient(to right, #f0f7f0, white);
+            border: 2px solid #97bc62;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .layer::before {
+            content: attr(data-layer);
+            position: absolute;
+            left: -2px;
+            top: -12px;
+            background: #2c5f2d;
+            color: white;
+            padding: 2px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .layer ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .layer li {
+            padding: 5px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .layer li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #2c5f2d;
+            font-weight: bold;
+        }
+        
+        .equipment-showcase {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .equipment-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .equipment-visual {
+            width: 100%;
+            height: 180px;
+            background: #f0f7f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+        }
+        
+        .capture-coverage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .coverage-visual {
+            background: #f9f9f9;
+            border: 2px solid #97bc62;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .coverage-illustration {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .drone-view {
+            background: linear-gradient(to bottom, rgba(151,188,98,0.3), rgba(151,188,98,0.1));
+            border: 3px dashed #97bc62;
+            border-radius: 10px;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .ground-view {
+            background: linear-gradient(to bottom, rgba(44,95,45,0.3), rgba(44,95,45,0.1));
+            border: 3px dashed #2c5f2d;
+            border-radius: 10px;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .villa-placement-demo {
+            background: #f0f7f0;
+            border: 2px solid #2c5f2d;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .plot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .plot-cell {
+            aspect-ratio: 1;
+            border: 2px solid #97bc62;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .plot-cell:hover {
+            background: #f0f7f0;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(44,95,45,0.2);
+        }
+        
+        .plot-cell.available {
+            border-color: #2c5f2d;
+            background: linear-gradient(135deg, #f0f7f0, white);
+        }
+        
+        .plot-cell.occupied {
+            background: #e0e0e0;
+            border-color: #999;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+        
+        .status-indicator.available {
+            background: #2c5f2d;
+        }
+        
+        .status-indicator.occupied {
+            background: #999;
+        }
+        
+        @media print {
+            .page {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+            }
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #2c5f2d, #97bc62);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-section h2 {
+            color: white;
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #2c5f2d;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #2c5f2d, #4a7c59);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 3em;
+            font-weight: bold;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .metric-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- COVER PAGE -->
+    <div class="page cover">
+        <h1>🏡 Sanctity Ferme</h1>
+        <h1>Interactive Walkthrough System</h1>
+        <div class="subtitle">300+ Acres | Virtual Walkthrough Experience | Next-Generation Property Sales</div>
+        <div style="margin: 60px 0;">
+            <div style="font-size: 4em;">🌳 🏠 🚁</div>
+        </div>
+        <div class="tagline">"Experience Your Dream Property Before You Buy"</div>
+        <div style="margin-top: 80px; font-size: 1.1em;">
+            <p>Proof of Concept & Full Project Proposal - v1.0.1</p>
+            <p style="margin-top: 10px; opacity: 0.8;">15 December 2025</p>
+        </div>
+    </div>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <div class="page">
+        <h2>📋 Executive Summary</h2>
+        
+        <div class="hero-image">
+            300+ Acre Farm | Premium Villas | Virtual Walkthrough
+        </div>
+        
+        <h3>The Challenge</h3>
+        <p>Potential buyers need to physically visit a 300+ acre property multiple times to:</p>
+        <ul style="margin: 15px 0 15px 30px;">
+            <li>Understand plot locations and surrounding landscapes</li>
+            <li>Explore amenities and common areas</li>
+            <li>Visualize their future home before purchase</li>
+        </ul>
+        
+        <p><strong>Result:</strong> Long sales cycles, multiple visits, and decision fatigue.</p>
+        
+        <h3>Our Solution</h3>
+        <div class="key-metrics">
+            <div class="metric-card">
+                <span class="metric-value">70%</span>
+                <span class="metric-label">Reduce Physical Visit of entire farm land - Finalize the farm land using virtual walkthrough and visit physically</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">24/7</span>
+                <span class="metric-label">Available Property Tours</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-value">100%</span>
+                <span class="metric-label">Immersive Experience</span>
+            </div>
+        </div>
+        
+        <p style="font-size: 1.2em; margin: 30px 0; padding: 25px; background: #f0f7f0; border-left: 5px solid #2c5f2d; border-radius: 5px;">
+            <strong>A PC-based interactive walkthrough</strong> combining photorealistic Gaussian Splat terrain with detailed 3D villa models, enabling buyers to explore properties virtually from Sanctity Ferme office, place villas on plots, and make informed decisions from anywhere in the world.
+        </p>
+        
+        <h3>Key Features</h3>
+        <div class="feature-grid">
+            <div class="feature-box">
+                <div class="icon">🌍</div>
+                <h4>Full Farm Exploration</h4>
+                <p>Navigate 300+ acres freely with photorealistic landscapes</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🏠</div>
+                <h4>Villa Placement</h4>
+                <p>Place and preview villas on any available 10K sqft plot</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🎯</div>
+                <h4>Smart Selection</h4>
+                <p>Filter plots by price, size, location, and availability</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🌳</div>
+                <h4>Greenery Preservation</h4>
+                <p>Visualize tree preservation and clearance impact</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🏊</div>
+                <h4>Amenity Tours</h4>
+                <p>Explore pools, clubhouse, kitchen, and common areas</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">📱</div>
+                <h4>Interactive UI</h4>
+                <p>Intuitive controls for seamless navigation</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT APPROACH -->
+    <div class="page">
+        <h2>🎯 Our Hybrid Solution Approach</h2>
+        
+        <div class="comparison-table">           
+            <div class="comparison-card recommended">
+                <h3>Our Hybrid Solution</h3>
+                <p>✓ Gaussian Splat + 3D Models</p>
+                <p>✓ 13-15 months development</p>
+                <p>✓ Optimal budget</p>
+                <p>✓ Photorealistic quality</p>
+                <p>✓ Easy to update & extend</p>
+            </div>
+        </div>
+        
+        <h3>How It Works: The Best of Both Worlds</h3>
+        
+        <div class="architecture-diagram">
+            <div class="layer" data-layer="LAYER 1">
+                <h4>🌍 Gaussian Splat Foundation (70% of Content)</h4>
+                <ul>
+                    <li>Farm landscapes and natural terrain</li>
+                    <li>Existing mature trees and vegetation</li>
+                    <li>Roads, pathways, water bodies</li>
+                    <li>Atmospheric elements and distant context</li>
+                </ul>
+                <p style="margin-top: 15px; padding: 15px; background: white; border-radius: 5px;">
+                    <strong>Why:</strong> Photorealistic quality at 1/10th the cost of modeling. Captured from real drone and ground photography.
+                </p>
+            </div>
+            
+            <div class="layer" data-layer="LAYER 2">
+                <h4>🏠 3D Assets (30% of Content)</h4>
+                <ul>
+                    <li>All villas (existing and templates)</li>
+                    <li>Amenity buildings with interiors</li>
+                    <li>Interactive elements (doors, windows)</li>
+                    <li>Placeable objects and furniture</li>
+                </ul>
+                <p style="margin-top: 15px; padding: 15px; background: white; border-radius: 5px;">
+                    <strong>Why:</strong> Enables interactivity, modifications, and villa placement. Can be updated easily.
+                </p>
+            </div>
+            
+            <div class="layer" data-layer="LAYER 3">
+                <h4>⚡ Interactive Systems</h4>
+                <ul>
+                    <li>Navigation and camera control</li>
+                    <li>Villa placement with collision detection</li>
+                    <li>Plot boundary visualization</li>
+                    <li>Information hotspots and filtering</li>
+                </ul>
+                <p style="margin-top: 15px; padding: 15px; background: white; border-radius: 5px;">
+                    <strong>Why:</strong> Provides the interactive experience buyers need to make informed decisions.
+                </p>
+            </div>
+        </div>
+        
+        <div class="villa-mockup">
+            <div class="tree" style="left: 100px;">
+                <div class="tree-foliage"></div>
+                <div class="tree-trunk"></div>
+            </div>
+            <div class="villa-structure">
+                <div class="villa-roof"></div>
+                <div class="villa-body">
+                    <div class="villa-window" style="left: 20px;"></div>
+                    <div class="villa-door"></div>
+                    <div class="villa-window" style="right: 20px;"></div>
+                </div>
+            </div>
+            <div class="tree" style="right: 100px;">
+                <div class="tree-foliage"></div>
+                <div class="tree-trunk"></div>
+            </div>
+        </div>
+        <p style="text-align: center; font-style: italic; color: #666;">Conceptual: Villa in natural setting with preserved greenery</p>
+    </div>
+
+    <!-- TECHNOLOGY STACK -->
+    <div class="page">
+        <h2>💻 Technology Stack</h2>
+        
+        <h3>Primary Platform: Unreal Engine 5.3+</h3>
+        
+        <div class="tech-stack">
+            <div class="tech-card">
+                <h4>🎮 Unreal Engine 5</h4>
+                <p>Industry-leading real-time rendering</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Native Gaussian Splatting support, Nanite virtualized geometry, Lumen global illumination</p>
+            </div>
+            
+            <div class="tech-card">
+                <h4>📸 Reality Capture</h4>
+                <p>Photogrammetry processing</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Converts drone and ground photos into 3D Gaussian Splats</p>
+            </div>
+            
+            <div class="tech-card">
+                <h4>🎨 3ds Max / Blender</h4>
+                <p>3D modeling & texturing</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Creating villa templates and interactive elements</p>
+            </div>
+            
+            <div class="tech-card">
+                <h4>🗺️ CAD Integration</h4>
+                <p>Site planning & accuracy</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Plot boundaries, measurements, and specifications</p>
+            </div>
+        </div>
+        
+        <h3>Why Unreal Engine?</h3>
+        <div class="diagram">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                        <ul style="margin-left: 20px;">
+                        <li>Superior real-time graphics quality</li>
+                        <li>Native Gaussian Splat support</li>
+                        <li>Robust landscape tools for 150 acres</li>
+                        <li>Blueprint visual scripting (no coding)</li>
+                        <li>VR/AR ready for future expansion</li>
+                        <li>Strong arch-viz community</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAPTURE EQUIPMENT -->
+    <div class="page">
+        <h2>📷 Capture Equipment Strategy</h2>
+        
+        <h3>Why Multiple Devices Are Essential</h3>
+        
+        <div class="equipment-showcase">
+            <div class="equipment-card">
+                <div class="equipment-visual">🚁</div>
+                <h4>Drone - DJI Mavic 3 Pro</h4>
+                <p><strong>Purpose:</strong> Aerial coverage</p>
+                <ul style="text-align: left; margin: 15px 0; font-size: 0.9em;">
+                    <li>90% of farm area capture</li>
+                    <li>Tree canopies & terrain</li>
+                    <li>Plot layouts from above</li>
+                    <li>Overview context shots</li>
+                </ul>
+                <p style="background: #f0f7f0; padding: 10px; border-radius: 5px; margin-top: 15px;">
+                    <strong>Cost:</strong> ₹30,000 rental for 3 days - approximate cost
+                </p>
+            </div>
+            
+            <div class="equipment-card">
+                <div class="equipment-visual">📸</div>
+                <h4>Ground Camera - Sony A7R IV</h4>
+                <p><strong>Purpose:</strong> Ground-level detail</p>
+                <ul style="text-align: left; margin: 15px 0; font-size: 0.9em;">
+                    <li>Villa facades & details</li>
+                    <li>Tree trunks & bases</li>
+                    <li>Pathway textures</li>
+                    <li>Human-eye perspective</li>
+                </ul>
+                <p style="background: #f0f7f0; padding: 10px; border-radius: 5px; margin-top: 15px;">
+                    <strong>Coverage:</strong> 2,000-3,000 shots<br>
+                    <strong>Cost:</strong> ₹7500 rental for 3 days - approximate cost
+                </p>
+            </div>
+        </div>
+        
+        <h3>Coverage Visualization: Why Both Are Needed</h3>
+        
+        <div class="capture-coverage">
+            <div class="coverage-visual">
+                <h4>🚁 Drone Capture</h4>
+                <div class="coverage-illustration">
+                    <div class="drone-view">
+                        <div style="font-size: 3em; margin-bottom: 0px;">⬇️</div>
+                        <div><strong>Top-Down View</strong></div>
+                        <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 5px;">
+                            ✓ Roofs<br>
+                            ✓ Tree canopies<br>
+                            ✓ Terrain overview<br>
+                            ✓ Plot boundaries
+                        </div>
+                        <div style="color: #d32f2f; margin-top: 10px;">
+                            ✗ Cannot see vertical surfaces<br>
+                            ✗ Misses ground details<br>
+                            ✗ Limited at 2m+ height
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="coverage-visual">
+                <h4>📸 Ground Camera</h4>
+                <div class="coverage-illustration">
+                    <div class="ground-view">
+                        <div style="font-size: 3em; margin-bottom: 0px;">↔️</div>
+                        <div><strong>Eye-Level View</strong></div>
+                        <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 5px;">
+                            ✓ Villa walls & facades<br>
+                            ✓ Tree trunks & bases<br>
+                            ✓ Ground textures<br>
+                            ✓ Human perspective
+                        </div>
+                        <div style="color: #d32f2f; margin-top: 10px;">
+                            ✗ Cannot capture from above<br>
+                            ✗ Limited area coverage<br>
+                            ✗ Time-intensive
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: #fffde7; border: 2px solid #f57f17; border-radius: 10px; padding: 20px; margin: 30px 0;">
+            <h4 style="color: #f57f17; margin-bottom: 10px;">⚠️ Critical Understanding</h4>
+            <p style="font-size: 1.1em;"><strong>Drone and Ground Camera are NOT alternatives - they're complementary!</strong></p>
+            <p style="margin-top: 10px;">Drone captures what ground camera cannot (aerial views). Ground camera captures what drone cannot (vertical surfaces and details). Together they provide complete 360° × 180° coverage needed for photorealistic Gaussian Splats.</p>
+        </div>
+        
+        <h3>Interior Image Capture</h3>
+        <div style="background: #e8f5e9; border-left: 5px solid #2c5f2d; padding: 20px; border-radius: 5px;">
+            <p>We'll use:</p>
+            <ul style="margin: 15px 0 15px 30px;">
+                <li>📱 Regular camera/phone for interior reference photos</li>
+                <li>📐 CAD files for accurate dimensions</li>
+                <li>🎨 3D modeling based on references</li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <!-- VILLA PLACEMENT SYSTEM -->
+    <div class="page">
+        <h2>🏡 Villa Placement System</h2>
+        
+        <h3>The Challenge: 10,000 sqft Plots with 20% Buildable Area</h3>
+        
+        <div class="villa-placement-demo">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                <div>
+                    <h4>Plot Specifications:</h4>
+                    <ul style="margin: 15px 0 15px 20px;">
+                        <li><strong>Total Plot Size:</strong> 10,000 sqft (approximately 30m × 30m)</li>
+                        <li><strong>Buildable Area:</strong> 2,000 sqft (20% for villa construction)</li>
+                        <li><strong>Green Space:</strong> 8,000 sqft (80% preserved for nature)</li>
+                        <li><strong>Villa Positioning:</strong> Anywhere within plot with setbacks</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #2c5f2d;">
+                    <h4 style="text-align: center; color: #2c5f2d;">Plot Layout</h4>
+                    <div style="width: 100%; aspect-ratio: 1; border: 3px solid #2c5f2d; border-radius: 8px; position: relative; margin-top: 15px; background: linear-gradient(135deg, #f0f7f0 0%, #e8f5e9 100%);">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45%; height: 45%; border: 3px dashed #97bc62; background: rgba(151,188,98,0.2); border-radius: 5px;"></div>
+                        <div style="position: absolute; bottom: 5px; left: 5px; right: 5px; text-align: center; font-size: 0.8em; color: #2c5f2d;">10,000 sqft plot</div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.8em; color: #97bc62; font-weight: bold;">2,000 sqft<br>buildable</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>How Villa Placement Works: Step-by-Step</h3>
+        
+        <div class="flow-diagram">
+            <div class="flow-step">
+                <div class="step-number">1</div>
+                <h4>Select Plot</h4>
+                <p>Navigate farm and click on available plot</p>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">2</div>
+                <h4>Choose Villa</h4>
+                <p>Select from 5 villa templates (1,750-2,000 sqft)</p>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">3</div>
+                <h4>Place & Rotate</h4>
+                <p>Position villa anywhere in plot with 360° rotation</p>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">4</div>
+                <h4>Preview Impact</h4>
+                <p>See tree clearance and greenery preservation %</p>
+            </div>
+        </div>
+        
+        <h3>Interactive Features</h3>
+        
+        <div class="plot-grid">
+            <div class="plot-cell available">
+                <div style="font-size: 2em;">🏡</div>
+                <div style="font-size: 0.9em; margin-top: 5px;">Plot A-12</div>
+                <div style="font-size: 0.8em; color: #666;">10K sqft</div>
+                <div class="status-indicator available"></div>
+            </div>
+            
+            <div class="plot-cell available">
+                <div style="font-size: 2em;">🌳</div>
+                <div style="font-size: 0.9em; margin-top: 5px;">Plot A-13</div>
+                <div style="font-size: 0.8em; color: #666;">10K sqft</div>
+                <div class="status-indicator available"></div>
+            </div>
+            
+            <div class="plot-cell occupied">
+                <div style="font-size: 2em; opacity: 0.5;">🏠</div>
+                <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.5;">Plot A-14</div>
+                <div style="font-size: 0.8em; color: #666; opacity: 0.5;">Sold</div>
+                <div class="status-indicator occupied"></div>
+            </div>
+            
+            <div class="plot-cell available">
+                <div style="font-size: 2em;">🌲</div>
+                <div style="font-size: 0.9em; margin-top: 5px;">Plot B-01</div>
+                <div style="font-size: 0.8em; color: #666;">10K sqft</div>
+                <div class="status-indicator available"></div>
+            </div>
+            
+            <div class="plot-cell available">
+                <div style="font-size: 2em;">🏡</div>
+                <div style="font-size: 0.9em; margin-top: 5px;">Plot B-02</div>
+                <div style="font-size: 0.8em; color: #666;">10K sqft</div>
+                <div class="status-indicator available"></div>
+            </div>
+            
+            <div class="plot-cell occupied">
+                <div style="font-size: 2em; opacity: 0.5;">🏠</div>
+                <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.5;">Plot B-03</div>
+                <div style="font-size: 0.8em; color: #666; opacity: 0.5;">Sold</div>
+                <div class="status-indicator occupied"></div>
+            </div>
+        </div>
+        <p style="text-align: center; font-style: italic; color: #666; margin-top: 10px;">Interactive plot selection grid (click to explore)</p>
+        
+        <h3>Smart Collision Detection</h3>
+        
+        <div class="diagram">
+            <h4>Real-Time Validation:</h4>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; border-left: 4px solid #2c5f2d;">
+                    <h4 style="color: #2c5f2d;">✓ Valid Placement (Green)</h4>
+                    <ul style="margin-top: 10px; font-size: 0.95em;">
+                        <li>Within plot boundaries</li>
+                        <li>Respects setback requirements</li>
+                        <li>No utility line conflicts</li>
+                        <li>Ground suitable for construction</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #ffebee; padding: 20px; border-radius: 8px; border-left: 4px solid #d32f2f;">
+                    <h4 style="color: #d32f2f;">✗ Invalid Placement (Red)</h4>
+                    <ul style="margin-top: 10px; font-size: 0.95em;">
+                        <li>Too close to boundary</li>
+                        <li>Conflicts with utilities</li>
+                        <li>Over protected tree zones</li>
+                        <li>Excessive slope</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="background: #fff8e1; padding: 20px; border-radius: 8px; border-left: 4px solid #f57f17; margin-top: 20px;">
+                <h4 style="color: #f57f17;">⚠ Objects to be Cleared (Yellow)</h4>
+                <p style="margin-top: 10px;">When villa is placed, system shows:</p>
+                <ul style="margin: 10px 0 10px 20px;">
+                    <li>Trees within footprint (count and species)</li>
+                    <li>Greenery preservation percentage (e.g., "87% preserved")</li>
+                    <li>Suggested villa rotation for maximum tree preservation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT TIMELINE -->
+    <div class="page">
+        <h2>📅 Project Timeline</h2>
+        
+        <h3>Proof of Concept (POC) - 8 Weeks</h3>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Weeks 1-2: Capture</h4>
+                    <p><strong>Deliverable:</strong> Raw data captured</p>
+                    <ul style="margin: 10px 0 10px 20px; font-size: 0.9em;">
+                        <li>Drone aerial photography (1 villa + 2 acres)</li>
+                        <li>Ground-level detail shots</li>
+                        <li>Interior reference photos</li>
+                        <li>Data backup and organization</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Weeks 3-4: Processing</h4>
+                    <p><strong>Deliverable:</strong> 3D assets ready</p>
+                    <ul style="margin: 10px 0 10px 20px; font-size: 0.9em;">
+                        <li>Photogrammetry processing</li>
+                        <li>Gaussian splat generation</li>
+                        <li>3D villa modeling from references</li>
+                        <li>Texture optimization</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Weeks 5-6: Development</h4>
+                    <p><strong>Deliverable:</strong> Alpha build</p>
+                    <ul style="margin: 10px 0 10px 20px; font-size: 0.9em;">
+                        <li>Unreal Engine scene setup</li>
+                        <li>Asset integration</li>
+                        <li>Navigation system</li>
+                        <li>Basic UI</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Weeks 7-8: Polish & Delivery</h4>
+                    <p><strong>Deliverable:</strong> Final POC</p>
+                    <ul style="margin: 10px 0 10px 20px; font-size: 0.9em;">
+                        <li>Villa placement prototype</li>
+                        <li>UI polish and hotspots</li>
+                        <li>Performance optimization</li>
+                        <li>Documentation and demo video</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Full Project - 9-15 Months</h3>
+        
+        <div style="background: #f0f7f0; border: 2px solid #2c5f2d; border-radius: 10px; padding: 30px; margin: 30px 0;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div>
+                    <h4 style="color: #2c5f2d;">Phase 1: Foundation</h4>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Months 1-4</p>
+                    <ul style="margin-top: 10px; font-size: 0.9em;">
+                        <li>Complete site capture</li>
+                        <li>All area processing</li>
+                        <li>Base terrain setup</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: #2c5f2d;">Phase 2: Core Build</h4>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Months 5-11</p>
+                    <ul style="margin-top: 10px; font-size: 0.9em;">
+                        <li>All villas (5 templates)</li>
+                        <li>Amenity buildings</li>
+                        <li>Interactive systems</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: #2c5f2d;">Phase 3: Refinement</h4>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Months 11-15</p>
+                    <ul style="margin-top: 10px; font-size: 0.9em;">
+                        <li>UI/UX polish</li>
+                        <li>Content population</li>
+                        <li>Testing & optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: #e3f2fd; border-left: 5px solid #1976d2; padding: 20px; border-radius: 5px; margin-top: 30px;">
+            <h4 style="color: #1976d2; margin-bottom: 10px;">📌 Critical Success Factors</h4>
+            <ul style="margin-left: 20px;">
+                <li><strong>Weather:</strong> 2-week buffer for drone capture (monsoon considerations)</li>
+                <li><strong>Client Data:</strong> CAD files and survey data provided upfront</li>
+                <li><strong>Feedback Cycles:</strong> Weekly reviews to stay on track</li>
+                <li><strong>Hardware Readiness:</strong> Client PCs tested early for compatibility</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- BUDGET BREAKDOWN -->
+    <div class="page">
+        <h2>Return on Investment (ROI)</h2>               
+        
+        <div class="key-metrics">
+            <div class="metric-card" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
+                <span class="metric-value">70%</span>
+                <span class="metric-label">Reduce Physical Visit of entire farm land - Finalize the farm land using virtual walkthrough and visit physically</span>
+            </div>
+            <div class="metric-card" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
+                <span class="metric-value">40%</span>
+                <span class="metric-label">Faster sales cycle</span>
+            </div>
+            <div class="metric-card" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
+                <span class="metric-value">50%</span>
+                <span class="metric-label">Better lead qualification</span>
+            </div>
+        </div>
+        
+        <div style="background: #e8f5e9; border-left: 5px solid #2c5f2d; padding: 20px; border-radius: 5px; margin-top: 30px;">
+            <h4 style="color: #2c5f2d; margin-bottom: 10px;">💡 Value Beyond Sales</h4>
+            <ul style="margin-left: 20px;">
+                <li><strong>Marketing Asset:</strong> Reusable for campaigns, social media, exhibitions</li>
+                <li><strong>Competitive Edge:</strong> First-mover advantage in premium farm property segment</li>
+                <li><strong>Scalability:</strong> Template for future developments and properties</li>
+                <li><strong>Global Reach:</strong> Attract international buyers without travel costs</li>
+                <li><strong>Brand Premium:</strong> Tech-forward image elevates property value perception</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- DELIVERABLES -->
+    <div class="page">
+        <h2>📦 Deliverables</h2>
+        
+        <h3>POC Deliverables (Week 8)</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-box">
+                <div class="icon">💻</div>
+                <h4>Application</h4>
+                <p>Windows executable with single villa walkthrough demo</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">📹</div>
+                <h4>Demo Video</h4>
+                <p>5-minute showcase of all features and interactions</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">📊</div>
+                <h4>Technical Report</h4>
+                <p>Performance metrics and feasibility analysis</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">📖</div>
+                <h4>Documentation</h4>
+                <p>User manual and installation guide</p>
+            </div>
+        </div>
+        
+        <h3>Full Project Deliverables (Month 15)</h3>
+        
+        <div class="diagram">
+            <h4>Software Package:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>✓ Complete Windows application with installer</li>
+                <li>✓ All 150 acres navigable with photorealistic quality</li>
+                <li>✓ 5 villa templates fully interactive</li>
+                <li>✓ All existing villas and amenities explorable</li>
+                <li>✓ Villa placement system on all available plots</li>
+                <li>✓ Save/load functionality for client preferences</li>
+                <li>✓ PDF export for plot selections</li>
+            </ul>
+            
+            <h4 style="margin-top: 25px;">Documentation:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>✓ Comprehensive user manual (PDF + video tutorials)</li>
+                <li>✓ Technical documentation for IT team</li>
+                <li>✓ Admin guide for content updates</li>
+                <li>✓ System requirements specification</li>
+            </ul>
+            
+            <h4 style="margin-top: 25px;">Source Assets:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>✓ Complete Unreal Engine project files</li>
+                <li>✓ All 3D models (native format + FBX exports)</li>
+                <li>✓ Gaussian splat source data</li>
+                <li>✓ Raw photogrammetry backup (2TB+ external HDD)</li>
+            </ul>
+            
+            <h4 style="margin-top: 25px;">Support & Training:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>✓ 2-day on-site training for sales team</li>
+                <li>✓ Video tutorial library (10+ videos)</li>
+                <li>✓ 3 months remote support package</li>
+                <li>✓ Performance optimization guide</li>
+            </ul>
+            
+            <h4 style="margin-top: 25px;">Marketing Materials:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>✓ 2-3 minute promo video</li>
+                <li>✓ 20+ high-resolution screenshots</li>
+                <li>✓ Social media clips package</li>
+                <li>✓ Exhibition/booth demo setup guide</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SYSTEM REQUIREMENTS -->
+    <div class="page">
+        <h2>🖥️ System Requirements</h2>
+        
+        <h3>End-User PC Requirements</h3>
+        
+        <div class="comparison-table">
+           
+            <div class="comparison-card recommended">
+                <h3>Recommended Specs</h3>
+                <p style="font-size: 0.9em; margin-bottom: 15px;">For optimal experience</p>
+                <ul style="text-align: left; margin-left: 20px; font-size: 0.95em;">
+                    <li><strong>CPU:</strong> Intel i7-12700 / Ryzen 7 5800X</li>
+                    <li><strong>GPU:</strong> NVIDIA RTX RTX 4060 or Higher</li>
+                    <li><strong>RAM:</strong> 32GB DDR4/DDR5</li>
+                    <li><strong>Storage:</strong> 512GB NVMe SSD</li>
+                    <li><strong>Target:</strong> 60 FPS @ 4K or 120 FPS @ 1080p</li>
+                </ul>
+                <p style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-radius: 5px; font-size: 0.9em;">
+                    <strong>Budget:</strong> ₹3,00,000 - 3,75,000 PC
+                </p>
+            </div>
+        </div>
+        
+        <h3>Distribution & Installation of Walkthrough Build</h3>
+        
+        <div class="tech-stack">
+            <div class="tech-card">
+                <h4>📀 USB Drive</h4>
+                <p style="margin-top: 10px;">Pre-loaded application on 64 or 128GB USB drives for client distribution</p>
+                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">Most reliable for sales offices</p>
+            </div>
+            
+            <div class="tech-card">
+                <h4>☁️ Download Link</h4>
+                <p style="margin-top: 10px;">Secure download portal for remote users (requires good internet)</p>
+                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">50-60GB download size</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FUTURE ENHANCEMENTS -->
+    <div class="page">
+        <h2>🚀 Future Enhancement Roadmap</h2>
+        
+        <h3>Phase 2 Additions (Optional)</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-box">
+                <div class="icon">🥽</div>
+                <h4>PC-VR Support</h4>
+                <p><strong>Timeline:</strong> +3 months</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Meta Quest 3 compatibility for immersive tours</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">🌐</div>
+                <h4>Web Version</h4>
+                <p><strong>Timeline:</strong> +2 months</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Browser-based lite version for initial property browsing</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">📱</div>
+                <h4>Mobile AR</h4>
+                <p><strong>Timeline:</strong> +2 months</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">On-site AR overlay using smartphones to preview villas</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">🌤️</div>
+                <h4>Weather/Time System</h4>
+                <p><strong>Timeline:</strong> +0.5 months</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">See property in different seasons and times of day</p>
+            </div>
+        </div>
+        
+        <h3>Maintenance & Support</h3>
+        
+        <div class="diagram">
+            <h4>Ongoing Support Package (Optional):</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>✓ Monthly content updates (new villa designs)</li>
+                <li>✓ Bug fixes and performance patches</li>
+                <li>✓ OS compatibility updates (Windows 11, 12)</li>
+                <li>✓ New feature additions</li>
+                <li>✓ Priority technical support</li>
+            </ul>
+            <p style="margin-top: 20px; padding: 20px; background: #f0f7f0; border-radius: 8px; border-left: 4px solid #2c5f2d;">
+                <strong>Includes:</strong> 20 hours/month of development and support time
+            </p>
+        </div>
+    </div>
+
+    <!-- NEXT STEPS -->
+    <div class="page">
+        <h2>✅ Next Steps & Action Plan</h2>
+        
+        <h3>Immediate Actions Required</h3>
+        
+        <div class="flow-diagram">
+            <div class="flow-step">
+                <div class="step-number">1</div>
+                <h4>Client Review</h4>
+                <p>Review and approve POC proposal scope</p>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">2</div>
+                <h4>Data Provision</h4>
+                <p>Provide CAD files, survey data, villa plans</p>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">3</div>
+                <h4>Site Access</h4>
+                <p>Schedule capture dates with weather buffer</p>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">4</div>
+                <h4>Kickoff</h4>
+                <p>Project start with 30% advance payment</p>
+            </div>
+        </div>
+        
+        <h3>Client Checklist</h3>
+        
+        <div class="diagram">
+            <h4>Documents to Provide:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>□ Complete site survey drawings (CAD format preferred)</li>
+                <li>□ Plot boundaries with geo-coordinates</li>
+                <li>□ Topographic survey data</li>
+                <li>□ Existing villa floor plans and elevations</li>
+                <li>□ Site master plan showing all plots</li>
+                <li>□ Amenity building layouts</li>
+                <li>□ Tree survey (if available)</li>
+                <li>□ Utility lines and infrastructure map</li>
+                <li>□ High-resolution photos of villas (if available)</li>
+                <li>□ Plot pricing and specifications</li>
+                <li>□ Villa template designs or references (3-5 variants)</li>
+                <li>□ Branding guidelines (logos, colors, fonts)</li>
+            </ul>
+            
+            <h4 style="margin-top: 25px;">Logistics to Arrange:</h4>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li>□ Site access permissions and schedule</li>
+                <li>□ Contact person for on-site coordination</li>
+                <li>□ Weather-dependent flexible capture dates</li>
+                <li>□ Drone flying permissions (if in restricted airspace)</li>
+                <li>□ Interior access to all villas and amenity buildings</li>
+                <li>□ Electrical access for equipment charging</li>
+            </ul>
+        </div>
+        
+        <h3>Decision Points</h3>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Week 8: POC Review</h4>
+                    <p><strong>Decision:</strong> Approve full project or iterate?</p>
+                    <p style="margin-top: 10px; font-size: 0.9em;">Based on POC demo, decide to proceed with full 150-acre development or request changes</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Month 5: Villa Templates</h4>
+                    <p><strong>Decision:</strong> Finalize 5 villa designs</p>
+                    <p style="margin-top: 10px; font-size: 0.9em;">Approve villa models or provide design changes</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Month 10: Alpha Review</h4>
+                    <p><strong>Decision:</strong> Core features approval</p>
+                    <p style="margin-top: 10px; font-size: 0.9em;">Test navigation, villa placement, and overall experience</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h4>Month 12: Beta Testing</h4>
+                    <p><strong>Decision:</strong> Final refinements</p>
+                    <p style="margin-top: 10px; font-size: 0.9em;">Complete testing with sales team, gather feedback</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT & THANK YOU -->
+    <div class="page" style="text-align: center; padding: 100px 60px;">
+        <div style="font-size: 4em; margin-bottom: 30px;">🌳 🏡 ✨</div>
+        <h1 style="color: #2c5f2d; margin-bottom: 20px;">Thank You</h1>
+        <p style="font-size: 1.3em; color: #666; margin-bottom: 40px;">We're excited to bring your farm property vision to life</p>
+        
+        <div style="background: linear-gradient(135deg, #2c5f2d, #97bc62); color: white; padding: 40px; border-radius: 15px; margin: 40px 0;">
+            <h3 style="color: white; margin-bottom: 20px;">Contact Information</h3>
+            <p style="font-size: 1.1em; margin: 10px 0;">📧 Email: amalrjn01@gmail.com</p>
+            <p style="font-size: 1.1em; margin: 10px 0;">📱 Phone: +91 90207 09292</p>
+
+            <p style="font-size: 1.1em; margin: 10px 0;">📧 Email: ben.06feb@gmail.com</p>
+            <p style="font-size: 1.1em; margin: 10px 0;">📱 Phone: +91 96331 02979</p>
+            
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.3);">
+                <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">Confidential - For client review only</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 60px; padding: 30px; background: #f0f7f0; border-radius: 10px;">
+            <h4 style="color: #2c5f2d; margin-bottom: 15px;">What Happens Next?</h4>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px;">
+                <div>
+                    <div style="font-size: 2em; margin-bottom: 10px;">1️⃣</div>
+                    <p style="font-size: 0.9em;"><strong>Discussion</strong><br>Review proposal and Q&A</p>
+                </div>
+                <div>
+                    <div style="font-size: 2em; margin-bottom: 10px;">2️⃣</div>
+                    <p style="font-size: 0.9em;"><strong>Site Visit</strong><br>Assess location and requirements</p>
+                </div>
+                <div>
+                    <div style="font-size: 2em; margin-bottom: 10px;">3️⃣</div>
+                    <p style="font-size: 0.9em;"><strong>Agreement</strong><br>Sign contract and schedule</p>
+                </div>
+                <div>
+                    <div style="font-size: 2em; margin-bottom: 10px;">4️⃣</div>
+                    <p style="font-size: 0.9em;"><strong>POC Start</strong><br>Begin 8-week development</p>
+                </div>
+            </div>
+        </div>
+        
+        <p style="font-size: 1.2em; color: #2c5f2d; margin-top: 60px; font-weight: bold;">
+            "Experience Tomorrow's Property Sales, Today"
+        </p>
+    </div>
+
+    <div style="text-align: center; padding: 20px; background: #2c5f2d; color: white;">
+    </div>
+
+</body>
+</html>
