@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SF5 Globe - 3D Asset Integration Proposal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f0f4f8;
+        }
+
+        .page {
+            background: white;
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 60px;
+            box-shadow: 0 2px 24px rgba(0, 0, 0, 0.09);
+        }
+
+        /* COVER */
+        .cover {
+            text-align: center;
+            padding: 90px 60px;
+            background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%);
+            color: white;
+        }
+
+        .cover h1 {
+            font-size: 2.8em;
+            margin-bottom: 14px;
+            text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .cover .subtitle {
+            font-size: 1.3em;
+            opacity: 0.88;
+            margin-bottom: 36px;
+        }
+
+        .cover-badges {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin: 36px 0;
+        }
+
+        .cover-badge {
+            background: rgba(255, 255, 255, 0.13);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 8px 22px;
+            font-size: 0.92em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .cover-meta {
+            font-size: 1em;
+            opacity: 0.75;
+            margin-top: 60px;
+        }
+
+        /* HEADINGS */
+        h2 {
+            color: #1e3a8a;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+            margin: 30px 0 20px;
+            font-size: 1.85em;
+        }
+
+        h3 {
+            color: #1e3a8a;
+            margin: 24px 0 14px;
+            font-size: 1.4em;
+        }
+
+        h4 {
+            color: #1e3a8a;
+            margin: 14px 0 8px;
+            font-size: 1.12em;
+        }
+
+        /* BOXES */
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 5px solid #3b82f6;
+            padding: 22px 26px;
+            margin: 24px 0;
+            border-radius: 5px;
+        }
+
+        .tech-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            padding: 22px 26px;
+            margin: 24px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            padding: 22px 26px;
+            margin: 24px 0;
+            border-radius: 8px;
+        }
+
+        /* PIPELINE */
+        .pipeline {
+            background: #f8fafc;
+            border: 3px solid #3b82f6;
+            border-radius: 14px;
+            padding: 28px;
+            margin: 24px 0;
+        }
+
+        .pipeline-title {
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .pipeline-steps {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            flex-wrap: wrap;
+        }
+
+        .pipe-step {
+            flex: 1;
+            min-width: 130px;
+            background: white;
+            border: 2px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 18px 14px;
+            text-align: center;
+            position: relative;
+        }
+
+        .pipe-step .ps-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .pipe-step .ps-label {
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #1e3a8a;
+            line-height: 1.3;
+        }
+
+        .pipe-step .ps-sub {
+            font-size: 0.72em;
+            color: #64748b;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .pipe-arrow {
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            color: #3b82f6;
+            font-size: 1.4em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .pipe-step.existing {
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+
+        .pipe-step.new-work {
+            border-color: #fcd34d;
+            background: #fffbeb;
+        }
+
+        .pipe-step.output {
+            border-color: #a5b4fc;
+            background: #eef2ff;
+        }
+
+        .pipe-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            font-size: 0.8em;
+        }
+
+        .pipe-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .pipe-legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 2px solid;
+        }
+
+        /* WORKFLOW STEPS */
+        .step {
+            background: white;
+            border-left: 4px solid #3b82f6;
+            padding: 20px 24px;
+            margin: 14px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .step h4 {
+            margin-top: 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #1e3a8a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+        }
+
+        table thead {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        table th,
+        table td {
+            padding: 11px 14px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* FEATURE GRID */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin: 18px 0;
+        }
+
+        .feature-box {
+            background: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 18px 20px;
+            border-radius: 5px;
+        }
+
+        .feature-box h4 {
+            margin-top: 0;
+        }
+
+        .icon {
+            font-size: 1.9em;
+            margin-bottom: 8px;
+        }
+
+        /* MILESTONE PAYMENT CARDS */
+        .payment-milestone {
+            display: flex;
+            align-items: stretch;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 14px rgba(30, 58, 138, 0.1);
+        }
+
+        .milestone-percent {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 32px;
+            min-width: 130px;
+            text-align: center;
+        }
+
+        .pct-value {
+            font-size: 2.8em;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .pct-label {
+            font-size: 0.8em;
+            opacity: 0.85;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .milestone-details {
+            background: #f0f6ff;
+            border: 2px solid #bfdbfe;
+            border-left: none;
+            padding: 22px 26px;
+            flex: 1;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .milestone-details h4 {
+            margin-top: 0;
+        }
+
+        .milestone-details ul {
+            margin: 10px 0 0 18px;
+            line-height: 1.75;
+        }
+
+        .cost-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.78em;
+            font-weight: 700;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .cost-badge.milestone {
+            background: #065f46;
+            color: white;
+        }
+
+        .cost-badge.client {
+            background: #6b21a8;
+            color: white;
+        }
+
+        .cost-category {
+            background: white;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin: 14px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+        }
+
+        .cost-icon {
+            font-size: 2em;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .cost-info h4 {
+            margin: 0 0 7px;
+        }
+
+        .cost-info p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* TIMELINE */
+        .timeline-box {
+            background: white;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            padding: 22px 26px;
+            margin: 18px 0;
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            font-size: 1.15em;
+            font-weight: bold;
+        }
+
+        /* MOCKUP STYLES */
+        .mockup-container {
+            background: #0f172a;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 22px 0;
+            box-shadow: 0 6px 36px rgba(0, 0, 0, 0.32);
+        }
+
+        .mockup-topbar {
+            background: #1e293b;
+            padding: 9px 16px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .mockup-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+
+        .mockup-dot.red {
+            background: #ef4444;
+        }
+
+        .mockup-dot.yellow {
+            background: #f59e0b;
+        }
+
+        .mockup-dot.green {
+            background: #22c55e;
+        }
+
+        .mockup-urlbar {
+            flex: 1;
+            background: #0f172a;
+            border-radius: 5px;
+            padding: 4px 12px;
+            color: #94a3b8;
+            font-size: 0.8em;
+            font-family: monospace;
+            margin-left: 8px;
+        }
+
+        .screen-label {
+            background: #1e3a8a;
+            color: white;
+            padding: 7px 18px;
+            font-size: 0.82em;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .mockup-globe-screen {
+            position: relative;
+            background: radial-gradient(ellipse at 30% 40%, #0c2340 0%, #050d1a 60%, #020810 100%);
+            height: 370px;
+            overflow: hidden;
+        }
+
+        .mockup-globe-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 8% 12%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
+                radial-gradient(1px 1px at 22% 28%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 38% 7%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 62% 18%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+                radial-gradient(1px 1px at 78% 9%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
+                radial-gradient(1px 1px at 88% 22%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 14% 58%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+                radial-gradient(1px 1px at 52% 42%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 72% 52%, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+        }
+
+        .globe-svg-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .classui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .classtoolbar {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 8px;
+            padding: 9px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            backdrop-filter: blur(5px);
+        }
+
+        .classtoolbar-btn {
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(59, 130, 246, 0.38);
+            border-radius: 5px;
+            color: #93c5fd;
+            font-size: 0.7em;
+            padding: 5px 9px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .classtoolbar-btn.active {
+            background: rgba(59, 130, 246, 0.48);
+            color: white;
+        }
+
+        .classsearchbar {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 7px;
+            padding: 7px 15px;
+            color: #e2e8f0;
+            font-size: 0.8em;
+            width: 240px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .classsearchbar span {
+            color: #60a5fa;
+        }
+
+        .classcompass {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 48px;
+            height: 48px;
+        }
+
+        .classzoom {
+            position: absolute;
+            right: 14px;
+            bottom: 55px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .zoom-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 5px;
+            color: #93c5fd;
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .classcoords {
+            position: absolute;
+            bottom: 10px;
+            left: 14px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 4px;
+            padding: 4px 10px;
+            color: #64748b;
+            font-size: 0.68em;
+            font-family: monospace;
+        }
+
+        .classcoords span {
+            color: #38bdf8;
+        }
+
+        .site-pin {
+            position: absolute;
+            top: 37%;
+            left: 56%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .site-pin-dot {
+            width: 15px;
+            height: 15px;
+            background: #f59e0b;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.9), 0 0 28px rgba(245, 158, 11, 0.4);
+            animation: pulse-pin 2s infinite;
+        }
+
+        @keyframes pulse-pin {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(245, 158, 11, 0.9), 0 0 28px rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 18px rgba(245, 158, 11, 1), 0 0 45px rgba(245, 158, 11, 0.6);
+            }
+        }
+
+        .site-pin-label {
+            background: rgba(245, 158, 11, 0.92);
+            color: #1a1a1a;
+            font-size: 0.66em;
+            font-weight: 700;
+            padding: 3px 7px;
+            border-radius: 3px;
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        /* Site 3D screen */
+        .mockup-site-screen {
+            position: relative;
+            height: 330px;
+            background: linear-gradient(160deg, #0f2027 0%, #1a3a2a 40%, #0d2318 100%);
+            overflow: hidden;
+        }
+
+        .terrain-svg-wrap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .feature-callout {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 7px;
+            padding: 7px 11px;
+            color: #e2e8f0;
+            font-size: 0.7em;
+            backdrop-filter: blur(4px);
+            max-width: 155px;
+        }
+
+        .feature-callout .fc-title {
+            color: #60a5fa;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .mockup-small {
+            background: #0f172a;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
+        }
+
+        .mockup-small-screen {
+            height: 190px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mockup-small-label {
+            background: #1e293b;
+            color: #93c5fd;
+            padding: 7px 14px;
+            font-size: 0.76em;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* COMPARISON */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin: 18px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+        /* UX FLOW */
+        .ux-flow {
+            background: #f8fafc;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            text-align: center;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .ux-step {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .ux-step .num {
+            font-size: 1.9em;
+            margin-bottom: 7px;
+        }
+
+        .ux-step h4 {
+            font-size: 0.92em;
+            margin: 0 0 4px;
+        }
+
+        .ux-step p {
+            font-size: 0.8em;
+            color: #555;
+        }
+
+        .ux-arrow {
+            font-size: 1.4em;
+            color: #3b82f6;
+        }
+
+        /* PRINT */
+        @media print {
+            .page {
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+            }
+        }
+
+        .page-number {
+            text-align: right;
+            color: #999;
+            margin-top: 36px;
+            font-size: 0.88em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  COVER                                             -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page cover">
+        <h1>🌍 Sanctity Ferme 5</h1>
+        <h1>3D Visualization of SF5 and Walkthrough</h1>
+        <div class="subtitle">Non-Existent Structures → 3D Modelling → Gaussian Splat → 3D Tiles → Live on Globe
+        </div>
+        <div class="cover-badges">
+            <div class="cover-badge">✅ Globe</div>
+            <div class="cover-badge">🏗️ 3D Modelling from CAD</div>
+            <div class="cover-badge">✨ Gaussian Splat Conversion</div>
+            <div class="cover-badge">📍 Geospatial Placement on Globe</div>
+        </div>
+        <div style="font-size: 3.5em; margin: 20px 0;">🏙️ → ✨ → 🌐</div>
+        <div class="cover-meta">
+            <p>Project Proposal - Version 1.0</p>
+            <p style="margin-top:8px; opacity:0.75;">March 2026</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  EXECUTIVE SUMMARY                                 -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>📋 Executive Summary</h2>
+        <div class="page-number">Page 2</div>
+
+        <h3>What This Proposal Covers</h3>
+        <p style="font-size:1.05em; line-height:1.85; margin: 14px 0;">
+            This project focuses exclusively on <strong>creating the missing built environment</strong> - structures,
+            buildings, and site elements that do not yet physically exist - as photorealistic <strong>Gaussian Splat 3D
+                assets</strong>, converting them to <strong> 3D Tiles</strong>, and placing them precisely on the
+            Globe at their correct geospatial coordinates.
+        </p>
+        <p style="font-size:1.05em; line-height:1.85; margin: 14px 0;">
+            No drone operations are required. The globe terrain, satellite imagery, and base data are preserved. We work
+            entirely from client-provided <strong>CAD files and design references</strong>.
+        </p>
+
+        <div class="highlight-box">
+            <h4 style="margin-top:0; color:#1e3a8a;">🎯 Core Scope in One Line</h4>
+            <p style="font-size:1.1em;"><strong>CAD Files + Design References → 3D Models → Gaussian Splat → 3D
+                    Tiles → Placed on Globe</strong></p>
+        </div>
+
+        <h3>What Already Exists (Client's Asset)</h3>
+        <div class="success-box">
+            <ul style="margin: 0 0 0 20px; line-height: 1.85; font-size: 1.02em;">
+                <li>✅ <strong> Globe Application</strong> - fully functional, deployed</li>
+                <li>✅ <strong>Satellite & Map Imagery Layers</strong> - live on globe</li>
+                <li>✅ <strong>Globe Navigation & Controls</strong> - pan, zoom, rotate, tilt</li>
+                <li>✅ <strong>Geospatial Infrastructure</strong> - coordinate system, tile streaming</li>
+                <li>✅ <strong>Hosting & Cloud Infrastructure</strong> - already set up by client</li>
+            </ul>
+        </div>
+
+        <h3>What Will Be Built (Our Scope)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Deliverable</th>
+                    <th>Method</th>
+                    <th>End Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>3D Models of Structures</strong></td>
+                    <td>Built in Blender / 3ds Max from CAD + references</td>
+                    <td>Photorealistic geometry with textures</td>
+                </tr>
+                <tr>
+                    <td><strong>Gaussian Splat Assets</strong></td>
+                    <td>Render-to-Splat: multi-angle renders → splat generation</td>
+                    <td>Photorealistic splat per structure</td>
+                </tr>
+                <tr>
+                    <td><strong> 3D Tilesets</strong></td>
+                    <td>Splat → 3D Tiles conversion with coordinates</td>
+                    <td>streamable tiles</td>
+                </tr>
+                <tr>
+                    <td><strong>Globe Integration</strong></td>
+                    <td>Load tilesets into globe at exact lat/long/alt</td>
+                    <td>Assets live and visible on client's globe</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <h4 style="margin-top:0;">⏱️ Estimated Timeline</h4>
+            <p style="font-size:1.08em;">
+                <strong>Total Duration:</strong> 10–12 Working Days (2–2.5 weeks)<br>
+                <strong>Phase 1 - 3D Modelling & Splat Creation:</strong> 5–6 working days<br>
+                <strong>Phase 2 - Tiles Conversion & Globe Integration:</strong> 5–6 working days
+            </p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  CONCEPT DESIGN                                    -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>🎨 Concept Design - How the Final Result Will Look</h2>
+        <div class="page-number">Page 3</div>
+
+        <p style="font-size:1.02em; line-height:1.8; margin-bottom:20px;">
+            The following mockups illustrate the expected look once the 3D splat assets are placed on the globe. The
+            globe UI and controls remain unchanged - the 3D tile assets appear seamlessly integrated into the terrain.
+        </p>
+
+        <!-- MOCKUP 1: Globe with placed assets -->
+        <h3>View 1 - Globe with New 3D Tile Assets Loaded</h3>
+        <p style="color:#555; margin-bottom:12px;">
+            The globe, now showing newly created 3D building/structure splats appearing at the SF5 site coordinates. The
+            base globe, satellite imagery, and navigation remain exactly as before.
+        </p>
+        <div class="mockup-container">
+            <div class="mockup-topbar">
+                <div class="mockup-dot red"></div>
+                <div class="mockup-dot yellow"></div>
+                <div class="mockup-dot green"></div>
+                <div class="mockup-urlbar">https://sf5-globe.client-cloud.com ← Globe, unchanged</div>
+            </div>
+            <div class="screen-label">🌍 Globe - New 3D Tile Assets Added at SF5 Coordinates</div>
+            <div class="mockup-globe-screen">
+                <div class="globe-svg-wrap">
+                    <svg width="330" height="330" viewBox="0 0 330 330" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="globeGlow2" cx="40%" cy="35%" r="60%">
+                                <stop offset="0%" stop-color="#1a5276" />
+                                <stop offset="40%" stop-color="#0e2d54" />
+                                <stop offset="100%" stop-color="#050d1a" />
+                            </radialGradient>
+                            <radialGradient id="globeSheen2" cx="35%" cy="30%" r="50%">
+                                <stop offset="0%" stop-color="rgba(100,180,255,0.22)" />
+                                <stop offset="100%" stop-color="rgba(0,0,0,0)" />
+                            </radialGradient>
+                            <clipPath id="globeClip2">
+                                <circle cx="165" cy="165" r="155" />
+                            </clipPath>
+                        </defs>
+                        <circle cx="165" cy="165" r="160" fill="#061525" opacity="0.45" />
+                        <circle cx="165" cy="165" r="155" fill="url(#globeGlow2)" />
+                        <g clip-path="url(#globeClip2)" opacity="0.88">
+                            <path
+                                d="M180 82 C205 72 235 77 250 97 C260 112 255 130 240 140 C250 150 260 165 255 180 C245 195 225 200 210 195 C200 215 195 235 180 245 C165 255 145 250 135 235 C125 220 130 200 140 190 C125 180 115 165 120 150 C110 140 100 125 110 110 C120 95 140 85 160 83 Z"
+                                fill="#2e7d32" opacity="0.72" />
+                            <path
+                                d="M120 110 C110 100 95 96 85 106 C75 116 77 133 87 140 C95 147 110 145 120 150 C115 136 113 124 120 110 Z"
+                                fill="#388e3c" opacity="0.58" />
+                            <line x1="10" y1="165" x2="320" y2="165" stroke="rgba(59,130,246,0.18)"
+                                stroke-width="0.8" />
+                            <line x1="165" y1="10" x2="165" y2="320" stroke="rgba(59,130,246,0.18)"
+                                stroke-width="0.8" />
+                            <ellipse cx="165" cy="165" rx="155" ry="52" fill="none" stroke="rgba(59,130,246,0.13)"
+                                stroke-width="0.8" />
+                            <ellipse cx="165" cy="165" rx="95" ry="155" fill="none" stroke="rgba(59,130,246,0.1)"
+                                stroke-width="0.8" />
+                        </g>
+                        <circle cx="165" cy="165" r="155" fill="url(#globeSheen2)" />
+                        <circle cx="165" cy="165" r="155" fill="none" stroke="rgba(59,130,246,0.55)" stroke-width="2" />
+                        <circle cx="165" cy="165" r="159" fill="none" stroke="rgba(59,130,246,0.12)" stroke-width="4" />
+                    </svg>
+                </div>
+                <!-- Site pin -->
+                <div class="site-pin">
+                    <div class="site-pin-dot"></div>
+                    <div class="site-pin-label">🏙️ SF5 - New 3D Assets</div>
+                </div>
+                <!-- "NEW" badge on pin -->
+                <div
+                    style="position:absolute; top:30%; left:59%; background:rgba(34,197,94,0.9); color:white; font-size:0.65em; font-weight:800; padding:2px 7px; border-radius:10px;">
+                    NEW TILES</div>
+                <div class="classui-overlay">
+                    <div class="classtoolbar">
+                        <div class="classtoolbar-btn active">🛰️ Satellite</div>
+                        <div class="classtoolbar-btn">🗺️ Road Map</div>
+                        <div class="classtoolbar-btn">🏞️ Aerial</div>
+                        <div class="classtoolbar-btn">🏙️ 3D Assets</div>
+                    </div>
+                    <div class="classsearchbar">🔍 <span>Search: SF5 Site</span></div>
+                    <svg class="classcompass" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="23" fill="rgba(15,23,42,0.8)" stroke="rgba(59,130,246,0.4)"
+                            stroke-width="1.5" />
+                        <polygon points="24,5 28,24 24,21 20,24" fill="#ef4444" />
+                        <polygon points="24,43 28,24 24,27 20,24" fill="#94a3b8" />
+                        <text x="24" y="14" text-anchor="middle" fill="white" font-size="7" font-weight="bold">N</text>
+                    </svg>
+                    <div class="classzoom">
+                        <div class="zoom-btn">+</div>
+                        <div class="zoom-btn">−</div>
+                    </div>
+                    <div class="classcoords">Lat: <span>18.5204°N</span> &nbsp; Lon: <span>73.8567°E</span> &nbsp;
+                        Alt: <span>520 km</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOCKUP 2: Zoomed site view with 3D tiles -->
+        <h3>View 2 - Zoomed In: 3D Splat Assets Visible on Site Terrain</h3>
+        <p style="color:#555; margin-bottom:12px;">
+            Camera flown to the SF5 site. The new Gaussian Splat 3D tile assets (buildings, structures) appear
+            seamlessly sitting on top of the Globe terrain at their precise GPS coordinates.
+        </p>
+        <div class="mockup-container">
+            <div class="mockup-topbar">
+                <div class="mockup-dot red"></div>
+                <div class="mockup-dot yellow"></div>
+                <div class="mockup-dot green"></div>
+                <div class="mockup-urlbar">https://sf5-globe.client-cloud.com/#site=sf5&zoom=close</div>
+            </div>
+            <div class="screen-label">📍 SF5 Site - Gaussian Splat 3D Tile Assets Placed on Globe Terrain</div>
+            <div class="mockup-site-screen">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(to bottom,#0b1829 0%,#112240 60%,#1a3a5c 100%);">
+                </div>
+                <div
+                    style="position:absolute;top:42%;left:0;right:0;height:25px;background:linear-gradient(to bottom,rgba(59,130,246,0.18),transparent);">
+                </div>
+                <div class="terrain-svg-wrap">
+                    <svg width="100%" height="210" viewBox="0 0 900 210" preserveAspectRatio="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="tg2" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#2d4a22" />
+                                <stop offset="60%" stop-color="#1e3a18" />
+                                <stop offset="100%" stop-color="#0d1f0a" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Terrain (Globe terrain) -->
+                        <path
+                            d="M0 210 L0 105 C80 90 150 95 220 85 C290 75 350 65 430 70 C510 75 570 60 650 55 C730 50 800 63 900 67 L900 210 Z"
+                            fill="url(#tg2)" />
+                        <path
+                            d="M0 210 L0 105 C80 90 150 95 220 85 C290 75 350 65 430 70 C510 75 570 60 650 55 C730 50 800 63 900 67 L900 210 Z"
+                            fill="none" stroke="rgba(34,197,94,0.08)" stroke-width="1" />
+                        <!-- Existing terrain label -->
+                        <rect x="12" y="150" width="130" height="18" fill="rgba(34,197,94,0.18)" rx="4" />
+                        <text x="77" y="163" text-anchor="middle" fill="rgba(34,197,94,0.7)" font-size="9"
+                            font-weight="600">Globe TERRAIN</text>
+                        <!-- Road -->
+                        <path d="M0 175 C150 170 300 155 450 150 C600 145 750 152 900 160" stroke="#374151" fill="none"
+                            stroke-width="7" stroke-linecap="round" />
+                        <path d="M0 175 C150 170 300 155 450 150 C600 145 750 152 900 160"
+                            stroke="rgba(255,255,255,0.13)" fill="none" stroke-width="1" stroke-dasharray="18,14" />
+                        <!-- ── NEW 3D TILE ASSETS (highlighted) ── -->
+                        <!-- Glow aura under new buildings -->
+                        <ellipse cx="395" cy="105" rx="100" ry="18" fill="rgba(245,158,11,0.12)" />
+                        <!-- Building A (main) -->
+                        <rect x="330" y="38" width="95" height="68" fill="#1e3a5f" rx="2" />
+                        <rect x="330" y="20" width="95" height="20" fill="#1a3352" rx="2" />
+                        <!-- windows -->
+                        <rect x="340" y="46" width="14" height="12" fill="rgba(147,197,253,0.45)" rx="1" />
+                        <rect x="360" y="46" width="14" height="12" fill="rgba(147,197,253,0.5)" rx="1" />
+                        <rect x="380" y="46" width="14" height="12" fill="rgba(147,197,253,0.4)" rx="1" />
+                        <rect x="400" y="46" width="14" height="12" fill="rgba(147,197,253,0.35)" rx="1" />
+                        <rect x="340" y="64" width="14" height="12" fill="rgba(147,197,253,0.3)" rx="1" />
+                        <rect x="360" y="64" width="14" height="12" fill="rgba(147,197,253,0.45)" rx="1" />
+                        <rect x="380" y="64" width="14" height="12" fill="rgba(147,197,253,0.38)" rx="1" />
+                        <rect x="400" y="64" width="14" height="12" fill="rgba(147,197,253,0.28)" rx="1" />
+                        <rect x="340" y="82" width="14" height="12" fill="rgba(147,197,253,0.35)" rx="1" />
+                        <rect x="360" y="82" width="14" height="12" fill="rgba(147,197,253,0.5)" rx="1" />
+                        <rect x="380" y="82" width="14" height="12" fill="rgba(147,197,253,0.4)" rx="1" />
+                        <!-- shadow -->
+                        <ellipse cx="378" cy="108" rx="50" ry="7" fill="rgba(0,0,0,0.38)" />
+                        <!-- "NEW" outline on building A -->
+                        <rect x="328" y="18" width="99" height="92" fill="none" stroke="rgba(245,158,11,0.65)"
+                            stroke-width="1.5" stroke-dasharray="5,3" rx="3" />
+                        <!-- Building B -->
+                        <rect x="465" y="52" width="62" height="52" fill="#1a3050" rx="2" />
+                        <rect x="465" y="40" width="62" height="14" fill="#162843" rx="2" />
+                        <rect x="472" y="58" width="10" height="12" fill="rgba(147,197,253,0.38)" rx="1" />
+                        <rect x="488" y="58" width="10" height="12" fill="rgba(147,197,253,0.48)" rx="1" />
+                        <rect x="504" y="58" width="10" height="12" fill="rgba(147,197,253,0.32)" rx="1" />
+                        <rect x="472" y="76" width="10" height="12" fill="rgba(147,197,253,0.28)" rx="1" />
+                        <rect x="488" y="76" width="10" height="12" fill="rgba(147,197,253,0.42)" rx="1" />
+                        <ellipse cx="496" cy="105" rx="33" ry="6" fill="rgba(0,0,0,0.32)" />
+                        <rect x="463" y="38" width="66" height="68" fill="none" stroke="rgba(245,158,11,0.55)"
+                            stroke-width="1.5" stroke-dasharray="5,3" rx="3" />
+                        <!-- Building C -->
+                        <rect x="555" y="62" width="48" height="38" fill="#1a2f4a" rx="2" />
+                        <rect x="555" y="52" width="48" height="12" fill="#152640" rx="2" />
+                        <rect x="561" y="68" width="9" height="10" fill="rgba(147,197,253,0.38)" rx="1" />
+                        <rect x="575" y="68" width="9" height="10" fill="rgba(147,197,253,0.45)" rx="1" />
+                        <rect x="589" y="68" width="9" height="10" fill="rgba(147,197,253,0.3)" rx="1" />
+                        <ellipse cx="579" cy="102" rx="26" ry="5" fill="rgba(0,0,0,0.28)" />
+                        <rect x="553" y="50" width="52" height="52" fill="none" stroke="rgba(245,158,11,0.5)"
+                            stroke-width="1.5" stroke-dasharray="5,3" rx="3" />
+                        <!-- Landscape elements -->
+                        <ellipse cx="265" cy="100" rx="38" ry="13" fill="rgba(34,197,94,0.16)" />
+                        <ellipse cx="650" cy="85" rx="32" ry="11" fill="rgba(34,197,94,0.14)" />
+                        <!-- Site boundary -->
+                        <path d="M 310 32 L 625 27 L 635 112 L 300 118 Z" fill="none" stroke="rgba(245,158,11,0.45)"
+                            stroke-width="1.5" stroke-dasharray="8,5" />
+                    </svg>
+                </div>
+                <!-- Feature callouts -->
+                <div class="feature-callout" style="top:10px; left:22px;">
+                    <span class="fc-title">✨ New 3D Tile Assets</span>
+                    Created from CAD → 3D model → Gaussian Splat → placed here
+                </div>
+                <div class="feature-callout" style="top:10px; right:18px;">
+                    <span class="fc-title">🌿 Globe Terrain</span>
+                    Client's existing satellite & terrain - untouched
+                </div>
+                <div class="feature-callout" style="bottom:48px; right:18px;">
+                    <span class="fc-title">📍 GPS-Accurate Placement</span>
+                    lat/long/alt per structure
+                </div>
+                <!-- toolbar -->
+                <div
+                    style="position:absolute; bottom:12px; left:14px; background:rgba(15,23,42,0.85); border:1px solid rgba(59,130,246,0.4); border-radius:7px; padding:8px; display:flex; gap:5px; backdrop-filter:blur(4px);">
+                    <div class="classtoolbar-btn active" style="font-size:0.68em; padding:4px 8px;">🏠 Top</div>
+                    <div class="classtoolbar-btn" style="font-size:0.68em; padding:4px 8px;">↙️ NW</div>
+                    <div class="classtoolbar-btn" style="font-size:0.68em; padding:4px 8px;">↗️ SE</div>
+                    <div class="classtoolbar-btn" style="font-size:0.68em; padding:4px 8px;">🔄 Orbit</div>
+                </div>
+                <div class="classcoords" style="bottom:12px; right:14px; left:auto;">Alt: <span>320 m</span> &nbsp;
+                    Tilt: <span>42°</span></div>
+            </div>
+        </div>
+
+        <!-- MOCKUP GRID: Side by side -->
+        <h3>View 3 - Before vs. After</h3>
+        <div class="mockup-grid">
+            <div class="mockup-small">
+                <div class="mockup-topbar" style="padding:6px 11px;">
+                    <div class="mockup-dot red"></div>
+                    <div class="mockup-dot yellow"></div>
+                    <div class="mockup-dot green"></div>
+                </div>
+                <div class="mockup-small-label">⬅️ BEFORE - Globe, Empty Site</div>
+                <div class="mockup-small-screen">
+                    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a2e1a 0%,#0d1f0d 100%);">
+                        <svg width="100%" height="100%" viewBox="0 0 300 190" preserveAspectRatio="xMidYMid slice"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="0" width="300" height="190" fill="#0d1f0d" />
+                            <rect x="20" y="20" width="75" height="55" fill="#1a3a1a" rx="2" opacity="0.65" />
+                            <rect x="105" y="15" width="95" height="70" fill="#0f2a12" rx="2" opacity="0.75" />
+                            <rect x="210" y="22" width="68" height="48" fill="#1e3e1e" rx="2" opacity="0.58" />
+                            <rect x="28" y="85" width="58" height="75" fill="#122512" rx="2" opacity="0.65" />
+                            <rect x="96" y="95" width="88" height="65" fill="#0a1f0a" rx="2" opacity="0.75" />
+                            <rect x="195" y="80" width="88" height="85" fill="#172d17" rx="2" opacity="0.6" />
+                            <line x1="0" y1="115" x2="300" y2="105" stroke="#2d3748" stroke-width="4" />
+                            <line x1="148" y1="0" x2="152" y2="190" stroke="#2d3748" stroke-width="3" />
+                            <!-- Empty lot marker -->
+                            <rect x="88" y="45" width="128" height="105" fill="rgba(100,116,139,0.12)" rx="3"
+                                stroke="rgba(100,116,139,0.3)" stroke-width="1.5" stroke-dasharray="6,4" />
+                            <text x="152" y="97" text-anchor="middle" fill="rgba(148,163,184,0.55)" font-size="9">EMPTY
+                                SITE</text>
+                            <text x="152" y="109" text-anchor="middle" fill="rgba(148,163,184,0.4)" font-size="8">(No 3D
+                                Assets)</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="mockup-small">
+                <div class="mockup-topbar" style="padding:6px 11px;">
+                    <div class="mockup-dot red"></div>
+                    <div class="mockup-dot yellow"></div>
+                    <div class="mockup-dot green"></div>
+                </div>
+                <div class="mockup-small-label">➡️ AFTER - Same Globe + New 3D Tile Assets</div>
+                <div class="mockup-small-screen">
+                    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a2e1a 0%,#0d1f0d 100%);">
+                        <svg width="100%" height="100%" viewBox="0 0 300 190" preserveAspectRatio="xMidYMid slice"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="0" width="300" height="190" fill="#0d1f0d" />
+                            <rect x="20" y="20" width="75" height="55" fill="#1a3a1a" rx="2" opacity="0.65" />
+                            <rect x="105" y="15" width="95" height="70" fill="#0f2a12" rx="2" opacity="0.75" />
+                            <rect x="210" y="22" width="68" height="48" fill="#1e3e1e" rx="2" opacity="0.58" />
+                            <rect x="28" y="85" width="58" height="75" fill="#122512" rx="2" opacity="0.65" />
+                            <rect x="96" y="95" width="88" height="65" fill="#0a1f0a" rx="2" opacity="0.75" />
+                            <rect x="195" y="80" width="88" height="85" fill="#172d17" rx="2" opacity="0.6" />
+                            <line x1="0" y1="115" x2="300" y2="105" stroke="#2d3748" stroke-width="4" />
+                            <line x1="148" y1="0" x2="152" y2="190" stroke="#2d3748" stroke-width="3" />
+                            <!-- New 3D buildings on site -->
+                            <rect x="100" y="50" width="42" height="55" fill="#1e3a5f" rx="2" />
+                            <rect x="100" y="38" width="42" height="14" fill="#1a3352" rx="2" />
+                            <rect x="106" y="57" width="8" height="8" fill="rgba(147,197,253,0.45)" rx="1" />
+                            <rect x="120" y="57" width="8" height="8" fill="rgba(147,197,253,0.5)" rx="1" />
+                            <rect x="134" y="57" width="8" height="8" fill="rgba(147,197,253,0.4)" rx="1" />
+                            <rect x="106" y="71" width="8" height="8" fill="rgba(147,197,253,0.35)" rx="1" />
+                            <rect x="120" y="71" width="8" height="8" fill="rgba(147,197,253,0.48)" rx="1" />
+                            <rect x="134" y="71" width="8" height="8" fill="rgba(147,197,253,0.3)" rx="1" />
+                            <rect x="106" y="85" width="8" height="8" fill="rgba(147,197,253,0.4)" rx="1" />
+                            <rect x="120" y="85" width="8" height="8" fill="rgba(147,197,253,0.5)" rx="1" />
+                            <ellipse cx="121" cy="107" rx="22" ry="5" fill="rgba(0,0,0,0.35)" />
+                            <rect x="155" y="62" width="32" height="42" fill="#1a3050" rx="2" />
+                            <rect x="155" y="52" width="32" height="12" fill="#162843" rx="2" />
+                            <rect x="161" y="69" width="7" height="8" fill="rgba(147,197,253,0.4)" rx="1" />
+                            <rect x="174" y="69" width="7" height="8" fill="rgba(147,197,253,0.45)" rx="1" />
+                            <rect x="161" y="83" width="7" height="8" fill="rgba(147,197,253,0.3)" rx="1" />
+                            <rect x="174" y="83" width="7" height="8" fill="rgba(147,197,253,0.42)" rx="1" />
+                            <ellipse cx="171" cy="106" rx="18" ry="4" fill="rgba(0,0,0,0.3)" />
+                            <!-- highlight glow -->
+                            <ellipse cx="140" cy="108" rx="60" ry="10" fill="rgba(245,158,11,0.1)" />
+                            <!-- NEW label -->
+                            <rect x="88" y="38" width="110" height="72" fill="none" stroke="rgba(245,158,11,0.5)"
+                                stroke-width="1.5" stroke-dasharray="5,3" rx="3" />
+                            <rect x="88" y="26" width="38" height="14" fill="rgba(245,158,11,0.85)" rx="3" />
+                            <text x="107" y="37" text-anchor="middle" fill="#1a1a1a" font-size="8"
+                                font-weight="bold">NEW ✨</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top:18px;">
+            <h4 style="margin-top:0;">📌 Note on Mockups</h4>
+            <p>These are concept illustrations. Actual photorealism of the splat assets is driven by CAD quality and
+                reference images provided by the client. Gaussian Splat output resembles real photography in 3D - far
+                more detailed and photorealistic than what can be depicted in a 2D diagram.</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  TECHNICAL PIPELINE                                -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>🏗️ Technical Pipeline - From CAD to Globe</h2>
+        <div class="page-number">Page 4</div>
+
+        <h3>End-to-End Pipeline Overview</h3>
+
+        <div class="pipeline">
+            <div class="pipeline-title">3D Asset Creation & Globe Integration Pipeline</div>
+            <div class="pipeline-steps">
+                <div class="pipe-step existing">
+                    <div class="ps-icon">📐</div>
+                    <div class="ps-label">Client CAD Files</div>
+                    <div class="ps-sub">DWG/DXF + design references</div>
+                </div>
+                <div class="pipe-arrow">→</div>
+                <div class="pipe-step new-work">
+                    <div class="ps-icon">🏗️</div>
+                    <div class="ps-label">3D Modelling</div>
+                    <div class="ps-sub">Blender / 3ds Max geometry + textures</div>
+                </div>
+                <div class="pipe-arrow">→</div>
+                <div class="pipe-step new-work">
+                    <div class="ps-icon">🎥</div>
+                    <div class="ps-label">Multi-Angle Renders</div>
+                    <div class="ps-sub">360° virtual camera coverage</div>
+                </div>
+                <div class="pipe-arrow">→</div>
+                <div class="pipe-step new-work">
+                    <div class="ps-icon">✨</div>
+                    <div class="ps-label">Gaussian Splat</div>
+                    <div class="ps-sub">SfM on renders → splat file</div>
+                </div>
+                <div class="pipe-arrow">→</div>
+                <div class="pipe-step new-work">
+                    <div class="ps-icon">🧱</div>
+                    <div class="ps-label"> 3D Tiles</div>
+                    <div class="ps-sub">Splat → .b3dm / .pnts + tileset.json</div>
+                </div>
+                <div class="pipe-arrow">→</div>
+                <div class="pipe-step output">
+                    <div class="ps-icon">🌐</div>
+                    <div class="ps-label">Live on Globe</div>
+                    <div class="ps-sub">Loaded into existing app at GPS coords</div>
+                </div>
+            </div>
+            <div class="pipe-legend">
+                <div class="pipe-legend-item">
+                    <div class="pipe-legend-dot" style="background:#dcfce7; border-color:#86efac;"></div>
+                    <span>Client provides</span>
+                </div>
+                <div class="pipe-legend-item">
+                    <div class="pipe-legend-dot" style="background:#fffbeb; border-color:#fcd34d;"></div>
+                    <span>Our work</span>
+                </div>
+                <div class="pipe-legend-item">
+                    <div class="pipe-legend-dot" style="background:#eef2ff; border-color:#a5b4fc;"></div>
+                    <span>Final output on globe</span>
+                </div>
+            </div>
+        </div>
+
+        <h3>Step-by-Step Process</h3>
+
+        <div class="step">
+            <h4><span class="step-number">1</span> Input Collection - CAD Files & Design References</h4>
+            <p><strong>What we receive from the client:</strong></p>
+            <ul style="margin: 10px 0 0 22px; line-height: 1.75;">
+                <li>CAD files (3D) - building footprints, floor plans, elevations, sections</li>
+                <li>Reference images / mood boards - desired architectural finish, material textures, colors</li>
+                <li>Precise GPS coordinates (lat/long/altitude) for each structure's placement on the globe</li>
+                <li>Any existing renders or visualizations for style reference</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h4><span class="step-number">2</span> 3D Modelling in Blender / 3ds Max</h4>
+            <p>Import CAD geometry and build complete, textured 3D models:</p>
+            <ul style="margin: 10px 0 0 22px; line-height: 1.75;">
+                <li>Import CAD footprints and elevations as base geometry</li>
+                <li>Model detailed building geometry (walls, roofs, facades, windows, openings)</li>
+                <li>Apply PBR materials - concrete, glass, metal, cladding - from reference images</li>
+                <li>Set up accurate scale matching real-world dimensions from CAD</li>
+                <li>Add site-level context elements (roads, landscaping, hardscape) if required</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h4><span class="step-number">3</span> Multi-Angle Rendering (Render-to-Splat Capture)</h4>
+            <p>Simulate drone photography by rendering from hundreds of virtual camera positions:</p>
+            <ul style="margin: 10px 0 0 22px; line-height: 1.75;">
+                <li>Place virtual cameras in a grid pattern around each structure at multiple heights</li>
+                <li>Cover 360° horizontal + multiple vertical angles (top-down to horizon-level)</li>
+                <li>Generate 200–500 high-resolution renders per structure with consistent lighting</li>
+                <li>This simulates what a drone photogrammetry survey would capture for a real building</li>
+            </ul>
+
+        </div>
+
+        <div class="step">
+            <h4><span class="step-number">4</span> Gaussian Splat Generation</h4>
+            <p>Process the renders through Structure-from-Motion and 3D Gaussian Splatting pipeline:</p>
+            <ul style="margin: 10px 0 0 22px; line-height: 1.75;">
+                <li>Run SfM (COLMAP) on the render set to extract camera poses and sparse point cloud</li>
+                <li>Train 3D Gaussian Splat model on the reconstructed scene</li>
+                <li>Optimize splat density, size, and color for photorealistic output</li>
+                <li>Export splat file (.ply or native format) with local coordinate reference</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h4><span class="step-number">5</span> 3D Tiles Conversion</h4>
+            <p>Convert the Gaussian Splat to 's streamable 3D Tiles format:</p>
+            <ul style="margin: 10px 0 0 22px; line-height: 1.75;">
+                <li>Transform local splat coordinates to (lat/long/altitude) using GPS target coordinates</li>
+                <li>Convert splat data to <code>.b3dm</code> or <code>.pnts</code> tile format</li>
+                <li>Generate tile hierarchy (LOD pyramid) for smooth progressive loading</li>
+                <li>Create <code>tileset.json</code> manifest with bounding volumes and geospatial transforms</li>
+                <li>Optimize tile sizes and streaming thresholds for web performance</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h4><span class="step-number">6</span> Integration into Globe</h4>
+            <p>Load the new tilesets into the client's live globe application:</p>
+            <ul style="margin: 10px 0 0 22px; line-height: 1.75;">
+                <li>Upload tile data to client's cloud storage (S3/Azure Blob)</li>
+                <li>Reference new tilesets in the existing application code</li>
+                <li>Configure layer order - new assets sit on top of existing terrain</li>
+                <li>Validate GPS placement accuracy in globe (visual + coordinate check)</li>
+                <li>Tune tile loading thresholds for smooth appearance on zoom-in</li>
+                <li>Test across browsers and devices</li>
+            </ul>
+        </div>
+
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  TIMELINE                                          -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>📅 Project Timeline</h2>
+        <div class="page-number">Page 5</div>
+
+        <div class="highlight-box">
+            <h3 style="margin-top:0; color:#1e3a8a;">Total Duration: 10–12 Working Days (~2–2.5 weeks)</h3>
+            <p>No site visits, no weather dependency. Work begins immediately on receipt of 3D files and GPS
+                coordinates from the client.</p>
+        </div>
+
+        <h3>Phase 1 - 3D Modelling & Splat Creation (5–6 Days)</h3>
+
+        <div class="timeline-box">
+            <div class="phase-header">Days 1–2: 3D Modelling</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Activity</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Day1</strong></td>
+                        <td>Import CAD files, build base geometry for all structures, set real-world scale</td>
+                        <td>Base 3D geometry per structure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day2</strong></td>
+                        <td>Apply PBR textures and materials, lighting setup, client review of 3D model before rendering
+                        </td>
+                        <td>Textured 3D models - client sign-off</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="timeline-box">
+            <div class="phase-header">Days 3–4: Rendering & Splat Generation</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Activity</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Day3</strong></td>
+                        <td>Set up virtual camera grid (360° × multiple heights), batch render 200–500 images per
+                            structure</td>
+                        <td>High-res render dataset per structure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day4</strong></td>
+                        <td>Run SfM on renders, train Gaussian Splat model, optimize output quality</td>
+                        <td>Gaussian Splat files (.ply) per structure</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="timeline-box">
+            <div class="phase-header">Day 5–6: 3D Tiles Conversion</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Activity</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Day5</strong></td>
+                        <td>Convert splats to 3D Tiles format, apply coordinate transforms, generate
+                            tileset.json</td>
+                        <td>Compatible tilesets</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day6</strong></td>
+                        <td>Optimize tile hierarchy and LOD, validate tile streaming, performance testing</td>
+                        <td>Production-ready tilesets</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Phase 2 - Globe Integration & Delivery (5–6 Days)</h3>
+
+        <div class="timeline-box">
+            <div class="phase-header">Days 7–9: Globe Integration & Testing</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Activity</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Day7</strong></td>
+                        <td>Upload tilesets to cloud storage, integrate into existing app code</td>
+                        <td>Assets visible on globe (dev environment)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day8</strong></td>
+                        <td>GPS accuracy validation, visual placement check, camera/view tuning for new assets</td>
+                        <td>Verified placement, dev link for client review</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day9</strong></td>
+                        <td>Cross-browser testing (Chrome, Firefox, Safari, Edge), mobile device testing, performance
+                            profiling</td>
+                        <td>Tested and stable integration</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="timeline-box">
+            <div class="phase-header">Days 10–12: Demo, Feedback & Final Handover</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Activity</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Day10</strong></td>
+                        <td>Live demo of integrated result - assets on globe shown locally / dev URL to client team</td>
+                        <td>Client review session, feedback collected</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day11</strong></td>
+                        <td>Apply client feedback, final polish, bug fixes if any</td>
+                        <td>Final version ready</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Day12</strong></td>
+                        <td>Push to production (client's Website), documentation and source code handover, training
+                            session</td>
+                        <td>Assets live on production globe ✅</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Milestone Check-ins</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Milestone</th>
+                    <th>Day</th>
+                    <th>Client Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>3D Models Ready</strong></td>
+                    <td>Day 2</td>
+                    <td>Review and approve 3D models before rendering begins</td>
+                </tr>
+                <tr>
+                    <td><strong>Splat Preview</strong></td>
+                    <td>Day 4</td>
+                    <td>Review Gaussian Splat quality (shared as preview render / viewer link)</td>
+                </tr>
+                <tr>
+                    <td><strong>Assets on Globe (Dev)</strong></td>
+                    <td>Day 8</td>
+                    <td>View on development globe URL, confirm placement accuracy</td>
+                </tr>
+                <tr>
+                    <td><strong>Full Demo</strong></td>
+                    <td>Day 10</td>
+                    <td>Sign-off session - triggers 70% development payment</td>
+                </tr>
+                <tr>
+                    <td><strong>Production Live</strong></td>
+                    <td>Day 12</td>
+                    <td>Assets live on client's production globe - triggers 30% final payment</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  DELIVERABLES                                      -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>📦 Deliverables</h2>
+        <div class="page-number">Page 6</div>
+
+        <h3>3D Assets</h3>
+        <div class="feature-grid">
+            <div class="feature-box">
+                <div class="icon">🏗️</div>
+                <h4>Source 3D Models</h4>
+                <p>Blender / 3ds Max files - fully editable, textured, with all materials, for future modifications</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🎥</div>
+                <h4>Render Dataset</h4>
+                <p>Complete set of multi-angle renders used to generate splats - archived for future re-processing</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">✨</div>
+                <h4>Gaussian Splat Files</h4>
+                <p>Optimized .ply splat files per structure - reusable for other viewers or engines</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🧱</div>
+                <h4> 3D Tilesets</h4>
+                <p>Complete tileset folders - ready for any deployment</p>
+            </div>
+        </div>
+
+        <h3>Globe Integration</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Deliverable</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Updated Globe Code</strong></td>
+                    <td>Modified application files with new tileset references integrated</td>
+                </tr>
+                <tr>
+                    <td><strong>Cloud Asset Upload</strong></td>
+                    <td>All tile data uploaded and configured in cloud storage</td>
+                </tr>
+                <tr>
+                    <td><strong>Coordinate Reference Sheet</strong></td>
+                    <td>Exact lat/long/altitude for every placed asset, in a simple reference document</td>
+                </tr>
+                <tr>
+                    <td><strong>Integration Guide</strong></td>
+                    <td>How new tilesets were added - enabling the client or developers to add more assets in future
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Documentation & Support</h3>
+        <ul style="margin: 14px 0 14px 26px; line-height: 1.85; font-size: 1.02em;">
+            <li><strong>Technical Documentation:</strong> Pipeline description, file formats, coordinate system used
+            </li>
+            <li><strong>Integration Code Comments:</strong> Annotated code additions for developer handover
+            </li>
+            <li><strong>Deployment Guide:</strong> Steps to upload, reference, and update tilesets on the client's cloud
+            </li>
+            <li><strong>Training Session:</strong> 1-hour walkthrough with client team on the integrated result</li>
+            <li><strong>2-Month Support:</strong> Bug fixes and minor adjustments post-delivery</li>
+        </ul>
+
+        <h3>Client Requirements</h3>
+        <div class="tech-box">
+            <h4 style="margin-top:0;">What We Need from the Client to Begin</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Format</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CAD Files</strong></td>
+                        <td>3D CAD</td>
+                        <td>Building geometry, footprints, elevations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reference Images</strong></td>
+                        <td>.jpg, .png</td>
+                        <td>Architectural style, material finishes, colors</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GPS Coordinates</strong></td>
+                        <td>Decimal lat/long + altitude (m)</td>
+                        <td>Precise placement on the globe</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  COST & PAYMENT                                    -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>💰 Cost Structure & Payment Terms</h2>
+        <div class="page-number">Page 7</div>
+
+        <div class="highlight-box">
+            <h4 style="margin-top:0; color:#1e3a8a;">Overview</h4>
+            <p style="font-size:1.05em;">This project has <strong>two cost categories</strong>: the development fee
+                (milestone-based, paid to our team) and the ongoing cloud hosting cost (paid directly by the client to
+                their cloud provider). There is no drone advance - this proposal requires no site visit.</p>
+        </div>
+
+        <!-- Development Fee -->
+        <h3>1. Project Development Fee <span class="cost-badge milestone">Milestone-Based</span></h3>
+
+        <div class="cost-category">
+            <div class="cost-icon">💻</div>
+            <div class="cost-info">
+                <h4>End-to-End 3D Asset Creation & Globe Integration</h4>
+                <p>Covers 3D modelling from CAD files, rendering, Gaussian Splat generation, 3D Tiles conversion,
+                    integration into the Globe, testing, documentation, and 2-month support. Paid in two
+                    milestones tied to tangible delivery points.</p>
+            </div>
+        </div>
+
+        <!-- 70% Milestone -->
+        <div class="payment-milestone">
+            <div class="milestone-percent">
+                <div class="pct-value">70%</div>
+                <div class="pct-label">Milestone 1</div>
+            </div>
+            <div class="milestone-details">
+                <h4>🖥️ After Live Demo - Assets Visible on Globe (Local / Dev)</h4>
+                <p>Triggered when the new 3D Gaussian Splat assets are successfully integrated into the globe and
+                    demonstrated to the client in a working environment:</p>
+                <ul>
+                    <li>All 3D structure assets visible on globe at correct GPS coordinates</li>
+                    <li>Assets loading and rendering correctly from multiple camera angles</li>
+                    <li>Globe features - navigation, imagery, search - fully intact</li>
+                    <li>Live demo session conducted with client team</li>
+                </ul>
+                <p style="margin-top:10px; color:#1e3a8a;"><strong>Client reviews, confirms accuracy, and approves
+                        before payment is triggered.</strong></p>
+            </div>
+        </div>
+
+        <!-- 30% Milestone -->
+        <div class="payment-milestone">
+            <div class="milestone-percent">
+                <div class="pct-value">30%</div>
+                <div class="pct-label">Milestone 2</div>
+            </div>
+            <div class="milestone-details">
+                <h4>🌐 After Production Deployment & Final Handover</h4>
+                <p>Triggered upon deployment to client's live production globe and completion of handover:</p>
+                <ul>
+                    <li>Assets live on the production globe URL, visible to all users</li>
+                    <li>All source files, splats, tilesets, and code changes handed over</li>
+                    <li>Documentation and integration guide delivered</li>
+                    <li>Training session completed (1 hour)</li>
+                    <li>2-month post-delivery support period begins</li>
+                </ul>
+                <p style="margin-top:10px; color:#1e3a8a;"><strong>Final payment triggers project close and support
+                        period start.</strong></p>
+            </div>
+        </div>
+
+        <table style="margin-top:22px;">
+            <thead>
+                <tr>
+                    <th>Development Component</th>
+                    <th>Scope</th>
+                    <th>Amount (INR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>3D Modelling</strong></td>
+                    <td>CAD → detailed geometry + PBR textures per structure</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Multi-Angle Rendering</strong></td>
+                    <td>200–500 renders per structure, virtual camera setup</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Gaussian Splat Generation</strong></td>
+                    <td>SfM + 3DGS training and optimization per structure</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong> 3D Tiles Conversion</strong></td>
+                    <td>Splat → tiles, coords, LOD hierarchy</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Globe Integration & Testing</strong></td>
+                    <td>Load into existing app, validate, cross-browser test</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Documentation & Training</strong></td>
+                    <td>Guides, code comments, 1-hr training session</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>2-Month Support</strong></td>
+                    <td>Bug fixes and minor adjustments post-delivery</td>
+                    <td></td>
+                </tr>
+                <tr style="background:#eff6ff;">
+                    <td colspan="2"><strong>💻 Total Development Fee</strong></td>
+                    <td><strong>6,00,000 INR</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Hosting Cost -->
+        <h3 style="margin-top:30px;">2. Cloud Hosting & Storage Cost <span class="cost-badge client"> Cloud
+                Account</span></h3>
+
+        <div class="cost-category">
+            <div class="cost-icon">☁️</div>
+            <div class="cost-info">
+                <h4>3D Tile Asset Storage - Added to Existing Client Infrastructure</h4>
+                <p>The new 3D tile assets will be stored in the client's existing cloud storage alongside the current
+                    globe assets. Hosting costs are paid directly by the client to their cloud provider. The incremental
+                    cost increase is relatively small as the Globe infrastructure is already running.</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Incremental Infrastructure Component</th>
+                    <th>Detail</th>
+                    <th>Estimated Additional Monthly Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>3D Tile Storage</strong></td>
+                    <td>New asset tilesets (~5–10 GB added to existing storage)</td>
+                    <td>No charge for MLP</td>
+                </tr>
+                <tr>
+                    <td><strong>Hosting Infrastructure</strong></td>
+                    <td>Globe hosting - no new servers needed</td>
+                    <td>No change</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <h4 style="margin-top:0;">⚠️ Notes</h4>
+            <ul style="margin: 10px 0 0 20px; line-height:1.8;">
+                <li>Hosting costs are <strong>not billed by us</strong> - they appear on the client's own cloud account
+                </li>
+                <li>We configure everything within the client's existing cloud setup; no new account or service is
+                    required</li>
+            </ul>
+        </div>
+
+        <!-- Payment Schedule Summary -->
+        <h3>Payment Schedule Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Payment</th>
+                    <th>When</th>
+                    <th>What It Covers</th>
+                    <th>Recipient</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>70% Development Fee</strong></td>
+                    <td>After demo sign-off (~Day 10)</td>
+                    <td>3D modelling, splat, tiles, integration, demo</td>
+                    <td>Client → Our Team</td>
+                </tr>
+                <tr>
+                    <td><strong>30% Development Fee</strong></td>
+                    <td>After production live + handover (~Day 12)</td>
+                    <td>Deployment, docs, training, support start</td>
+                    <td>Client → Our Team</td>
+                </tr>
+                <tr style="background:#f5f3ff;">
+                    <td><strong>Hosting (incremental)</strong></td>
+                    <td>Recurring monthly (post-delivery)</td>
+                    <td>Additional tile storage + CDN bandwidth</td>
+                    <td>Client → Cloud Provider directly</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  NEXT STEPS                                        -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page">
+        <h2>✅ Next Steps & Project Initiation</h2>
+        <div class="page-number">Page 8</div>
+
+        <h3>Immediate Actions Required</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Responsibility</th>
+                    <th>Timeline</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Review and approve this proposal</td>
+                    <td>Client</td>
+                    <td>This week</td>
+                </tr>
+                <tr>
+                    <td>Provide CAD files and reference images</td>
+                    <td>Client</td>
+                    <td>Upon approval</td>
+                </tr>
+                <tr>
+                    <td>Share GPS coordinates for each structure</td>
+                    <td>Client</td>
+                    <td>Upon approval</td>
+                </tr>
+                <tr>
+                    <td>Confirmaton for tile upload</td>
+                    <td>Client</td>
+                    <td>Week 1</td>
+                </tr>
+                <tr>
+                    <td>Sign project agreement</td>
+                    <td>Both</td>
+                    <td>Week 1</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>UX Flow - User Experience After Integration</h3>
+
+        <div class="ux-flow">
+            <div class="ux-step">
+                <div class="num">1️⃣</div>
+                <h4>Open Globe</h4>
+                <p>Globe loads as normal</p>
+            </div>
+            <div class="ux-arrow">→</div>
+            <div class="ux-step">
+                <div class="num">2️⃣</div>
+                <h4>Navigate to SF5</h4>
+                <p>Search or pan to site location</p>
+            </div>
+            <div class="ux-arrow">→</div>
+            <div class="ux-step">
+                <div class="num">3️⃣</div>
+                <h4>Zoom In</h4>
+                <p>Camera approaches SF5 coordinates</p>
+            </div>
+            <div class="ux-arrow">→</div>
+            <div class="ux-step">
+                <div class="num">4️⃣</div>
+                <h4>3D Tiles Load</h4>
+                <p>New assets appear progressively</p>
+            </div>
+            <div class="ux-arrow">→</div>
+            <div class="ux-step">
+                <div class="num">5️⃣</div>
+                <h4>Explore</h4>
+                <p>Orbit, tilt, inspect in full 3D</p>
+            </div>
+        </div>
+
+        <h3>Success Criteria</h3>
+        <div class="feature-grid">
+            <div class="feature-box">
+                <div class="icon">✓</div>
+                <h4>Placement Accuracy</h4>
+                <p>Each structure positioned within 1-metre accuracy of its GPS coordinates on the globe</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">✓</div>
+                <h4>Visual Quality</h4>
+                <p>Gaussian Splat output matches or exceeds client reference images in photorealism</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">✓</div>
+                <h4>Performance</h4>
+                <p>New assets load smoothly on zoom-in at 30+ FPS without degrading Globe performance</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">✓</div>
+                <h4>Zero Disruption</h4>
+                <p>All Globe features, navigation, imagery layers remain fully functional and unchanged</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  THANK YOU                                         -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page cover">
+        <div class="page-number" style="color:white;">Page 9</div>
+        <div style="font-size:3.5em; margin-bottom:24px;">🤝</div>
+        <h1 style="font-size:2.3em;">Thank You</h1>
+        <div style="font-size:1.2em; margin:32px 0; opacity:0.9;">Ready to bring your SF5 vision to life on the globe
+        </div>
+        <div
+            style="background:rgba(255,255,255,0.1); padding:36px; border-radius:14px; margin:44px 0; border:1px solid rgba(255,255,255,0.2);">
+            <h3 style="color:white; margin-bottom:18px;">Contact Information</h3>
+            <p style="font-size:1.15em; margin:12px 0;">Amal Rajan</p>
+            <p style="font-size:1.15em; margin:12px 0;"> <a href="/cdn-cgi/l/email-protection" style="color:white;"
+                    data-cfemail="
+                    fd8d8f9297989e898ebd9a9892d08b948e889c9194879c89949293d39e9290">amalrjn01@gmail.com</a>
+            </p>
+            <p style="font-size:1.15em; margin:12px 0;">+91 90207 09292</p>
+        </div>
+        <div style="font-size:0.95em; opacity:0.75; margin-top:44px;">
+            <p>3D Visualization of SF5 and Walkthrough Proposal v1.0</p>
+            <p style="margin-top:7px;">March 2026</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
